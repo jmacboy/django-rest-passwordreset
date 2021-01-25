@@ -122,8 +122,8 @@ class ResetPasswordRequestToken(GenericAPIView):
         from authentication.models import ClientProfile
 
         for user in users:
-            if self.user_type == User.USER_TYPE_CLIENT:
-                client = ClientProfile.objects.filter(pk=self.pk).first()
+            if user.user_type == User.USER_TYPE_CLIENT:
+                client = ClientProfile.objects.filter(pk=user.pk).first()
                 if client is not None:
                     if client.facebook_id is not None:
                         raise exceptions.ValidationError({
