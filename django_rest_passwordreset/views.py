@@ -118,7 +118,23 @@ class ResetPasswordRequestToken(GenericAPIView):
         # iterate over all users and check if there is any user that is active
         # also check whether the password can be changed (is useable), as there could be users that are not allowed
         # to change their password (e.g., LDAP user)
+        from authentication.models import User
+        from authentication.models import ClientProfile
+
         for user in users:
+            if self.user_type == User.USER_TYPE_CLIENT:
+                client = ClientProfile.objects.filter(pk=self.pk).first()
+                if client is not None:
+                    if client.facebook_id is not None:
+                        raise exceptions.ValidationError({
+                            'email': [_(
+                                "Facebook account")],
+                        })
+                    if client.google_id is not None:
+                        raise exceptions.ValidationError({
+                            'email': [_(
+                                "Google account")],
+                        })
             if user.eligible_for_reset():
                 active_user_found = True
 
