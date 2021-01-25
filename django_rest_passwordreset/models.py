@@ -3,7 +3,6 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 
-
 from django_rest_passwordreset.tokens import get_token_generator
 
 # Prior to Django 1.5, the AUTH_USER_MODEL setting does not exist.
@@ -114,14 +113,15 @@ def eligible_for_reset(self):
     from authentication.models import User
     if self.user_type == User.USER_TYPE_CLIENT:
         from authentication.models import ClientProfile
-        client = ClientProfile.objects.filter(pk=self.pk)
-        if client.facebook_id is not None or client.google_id is not None:
+        client = ClientProfile.objects.filter(pk=self.pk).first()
+        if client is not None and (client.facebook_id is not None or client.google_id is not None):
             return False
 
     if getattr(settings, 'DJANGO_REST_MULTITOKENAUTH_REQUIRE_USABLE_PASSWORD', True):
         # if we require a usable password then return the result of has_usable_password()
         return self.has_usable_password()
     return True
+
 
 # add eligible_for_reset to the user class
 UserModel = get_user_model()
