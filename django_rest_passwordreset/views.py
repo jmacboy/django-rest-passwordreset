@@ -118,7 +118,6 @@ class ResetPasswordRequestToken(GenericAPIView):
         # iterate over all users and check if there is any user that is active
         # also check whether the password can be changed (is useable), as there could be users that are not allowed
         # to change their password (e.g., LDAP user)
-        from authentication.models import User
         from authentication.models import ClientProfile
 
         for user in users:
