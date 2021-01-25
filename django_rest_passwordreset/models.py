@@ -2,7 +2,6 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
-from authentication.models import User
 
 
 from django_rest_passwordreset.tokens import get_token_generator
@@ -112,7 +111,7 @@ def eligible_for_reset(self):
     if not self.is_active:
         # if the user is active we dont bother checking
         return False
-
+    from authentication.models import User
     if self.user_type == User.USER_TYPE_CLIENT:
         from authentication.models import ClientProfile
         client = ClientProfile.objects.filter(pk=self.pk)
